@@ -9,11 +9,11 @@
 ## Blake2b supports salting, MAC, and tree hashing.
 
 const
-   BLOCKBYTES*    = 128
-   OUTBYTES*      = 64
-   KEYBYTES*      = 64
-   SALTBYTES*     = 16
-   PERSONALBYTES* = 16
+   BLAKE2B_BLOCKBYTES*    = 128
+   BLAKE2B_OUTBYTES*      = 64
+   BLAKE2B_KEYBYTES*      = 64
+   BLAKE2B_SALTBYTES*     = 16
+   BLAKE2B_PERSONALBYTES* = 16
 
 let IV: array[8, uint64] = [
       0x6a09e667f3bcc908'u64,
@@ -45,7 +45,7 @@ type
         h        : array[8, uint64]
         t        : array[2, uint64]
         f        : array[2, uint64]
-        buf      : array[BLOCKBYTES, uint8]
+        buf      : array[BLAKE2B_BLOCKBYTES, uint8]
         buflen   : uint64
         outlen   : uint64
 
@@ -61,8 +61,8 @@ type
         node_depth*   : uint8 ## Current depth of a tree hash.
         inner_length* : uint8
         reserved      : array[14, uint8]
-        salt*         : array[SALTBYTES, uint8] ## For salting a particular hash. Optional.
-        personal*     : array[PERSONALBYTES, uint8] ## Another kind of salt. Optional.
+        salt*         : array[BLAKE2B_SALTBYTES, uint8] ## For salting a particular hash. Optional.
+        personal*     : array[BLAKE2B_PERSONALBYTES, uint8] ## Another kind of salt. Optional.
 
 static:
     assert Blake2bParam.sizeof == 64
@@ -190,7 +190,7 @@ proc update*(S: var Blake2bState; input: pointer; inlen: uint) =
     var minlen = inlen
     if minlen > 0'u:
         var left: uint = S.buflen.uint
-        var fill: uint = BLOCKBYTES.uint - left
+        var fill: uint = BLAKE2B_BLOCKBYTES.uint - left
 
         if minlen > fill:
             S.buflen = 0
@@ -200,14 +200,14 @@ proc update*(S: var Blake2bState; input: pointer; inlen: uint) =
                 minput += fill
                 minlen -= fill
 
-            inc S, BLOCKBYTES
+            inc S, BLAKE2B_BLOCKBYTES
             compress(S, addr S.buf[0])
 
-            while minlen > BLOCKBYTES.uint:
-                inc S, BLOCKBYTES
+            while minlen > BLAKE2B_BLOCKBYTES.uint:
+                inc S, BLAKE2B_BLOCKBYTES
                 compress(S, cast[ptr uint8](minput))
-                minput += BLOCKBYTES
-                minlen -= BLOCKBYTES
+                minput += BLAKE2B_BLOCKBYTES
+                minlen -= BLAKE2B_BLOCKBYTES
 
         copymem(addr S.buf[S.buflen], minput, minlen)
         S.buflen += minlen
@@ -215,10 +215,10 @@ proc update*(S: var Blake2bState; input: pointer; inlen: uint) =
 proc init*(S: var Blake2bState; outlen: uint64; key: pointer = nil; keylen: uint = 0) =
     ## Initialize a Blake2b hasher targeted for a sequential hash
     ## job. Optionally accepts a key and the length of that key.
-    if (outlen == 0) or (outlen > OUTBYTES.uint64):
+    if (outlen == 0) or (outlen > BLAKE2B_OUTBYTES.uint64):
         raise new_exception(ValueError, "Output bytes must be betwen 1 and 64")
 
-    if (keylen > 0'u64) and (keylen > KEYBYTES.uint64):
+    if (keylen > 0'u64) and (keylen > BLAKE2B_KEYBYTES.uint64):
         raise new_exception(ValueError, "Key length must be zero, or between 1 and 64")
 
     var p: Blake2bParam
@@ -233,10 +233,10 @@ proc init*(S: var Blake2bState; outlen: uint64; key: pointer = nil; keylen: uint
     init(S, p)
 
     if keylen > 0'u64:
-        var blk: array[BLOCKBYTES, uint8];
+        var blk: array[BLAKE2B_BLOCKBYTES, uint8];
         copymem(addr blk[0], key, keylen)
-        update(S, addr blk[0], BLOCKBYTES.uint32)
-        zeromem(addr blk[0], BLOCKBYTES)
+        update(S, addr blk[0], BLAKE2B_BLOCKBYTES.uint32)
+        zeromem(addr blk[0], BLAKE2B_BLOCKBYTES)
 
 proc final*(S: var Blake2bState; layer_last: bool; output: pointer; outlen: uint) =
     ## Marks a hashing as complete and returns the computed
@@ -252,8 +252,8 @@ proc final*(S: var Blake2bState; layer_last: bool; output: pointer; outlen: uint
     if layer_last:
         S.lastnode = true
 
-    if S.buflen < BLOCKBYTES:
-        zeromem(addr S.buf[S.buflen], BLOCKBYTES.uint - S.buflen.uint)
+    if S.buflen < BLAKE2B_BLOCKBYTES:
+        zeromem(addr S.buf[S.buflen], BLAKE2B_BLOCKBYTES.uint - S.buflen.uint)
 
     compress(S, addr S.buf[0])
 
@@ -271,8 +271,8 @@ proc blake2b*(output, input, key: pointer; outlen, inlen, keylen: uint) =
     if (input == nil) and (inlen > 0'u): return
     if output == nil: return
     if (key == nil) and (keylen > 0'u): return
-    if (outlen != 0'u32) and (outlen > OUTBYTES.uint): return
-    if keylen > KEYBYTES.uint: return
+    if (outlen != 0'u32) and (outlen > BLAKE2B_OUTBYTES.uint): return
+    if keylen > BLAKE2B_KEYBYTES.uint: return
 
     init(S, outlen, key, keylen)
     update(S, input, inlen)
