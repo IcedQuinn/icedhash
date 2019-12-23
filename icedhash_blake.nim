@@ -67,6 +67,8 @@ type
 static:
     assert Blake2bParam.sizeof == 64
     assert IV.sizeof == Blake2bState.h.sizeof
+    # only a hard requirement because i don't swap it on big endy systems yet
+    assert cpu_endian == little_endian
 
 proc `[]`[T](a: ptr T; b: int): T {.inline.} =
     return cast[ptr T](cast[int](a) + (b * T.sizeof))[]
