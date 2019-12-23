@@ -1,1 +1,1 @@
-redo-ifchange blake2b bintext
+redo-ifchange src/test

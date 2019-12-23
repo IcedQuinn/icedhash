@@ -1,8 +1,8 @@
 
-import json, bintext
+import json, icedbintext
 
 const
-    blake2_cases = slurp"blake2-kat.json"
+    blake2_cases = slurp"../../tests/blake2-kat.json"
 
 echo("TAP version 13")
 echo("# Blake2b hashes")
@@ -21,9 +21,8 @@ for testcase in js:
         zeromem(addr buffer[0], uint64.sizeof * 8)
         inc tests
 
-        var ret: int
         if (key_key.len > 0) and (in_key.len > 0):
-            ret = blake2b(
+            blake2b(
                 addr buffer[0],
                 addr in_key[0],
                 addr key_key[0],
@@ -31,7 +30,7 @@ for testcase in js:
                 len(in_key).uint,
                 len(key_key).uint)
         elif (key_key.len > 0) and (in_key.len == 0):
-            ret = blake2b(
+            blake2b(
                 addr buffer[0],
                 nil,
                 addr key_key[0],
@@ -39,7 +38,7 @@ for testcase in js:
                 0,
                 len(key_key).uint)
         elif (key_key.len == 0) and (in_key.len > 0):
-            ret = blake2b(
+            blake2b(
                 addr buffer[0],
                 addr in_key[0],
                 nil,
@@ -47,15 +46,13 @@ for testcase in js:
                 len(in_key).uint,
                 0)
         else:
-            ret = blake2b(
+            blake2b(
                 addr buffer[0],
                 nil,
                 nil,
                 len(out_key).uint,
                 0,
                 0)
-
-        assert ret >= 0
 
         if out_key.to_hex_string_lower == to_hex_string_lower(buffer):
             echo("ok ", tests)

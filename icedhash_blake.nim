@@ -277,4 +277,4 @@ proc blake2b*(output, input, key: pointer; outlen, inlen, keylen: uint) =
     final(S, false, output, outlen)
 
 when is_main_module:
-    include blake2b_test
+    include icedhash_blake/test
