@@ -259,18 +259,18 @@ proc final*(S: var Blake2bState; layer_last: bool; output: pointer; outlen: uint
 
     copymem(output, addr S.h[0], outlen)
 
-proc blake2b*(output, input, key: pointer; outlen, inlen, keylen: uint): int =
+proc blake2b*(output, input, key: pointer; outlen, inlen, keylen: uint) =
     ## Utility function that accepts an output buffer, optional
     ## input and optional key and performs a sequential hash in a
     ## single call.
     var S: Blake2bState
 
     # Verify parameters
-    if (input == nil) and (inlen > 0'u): return -1
-    if output == nil: return -1
-    if (key == nil) and (keylen > 0'u): return -1
-    if (outlen != 0'u32) and (outlen > OUTBYTES.uint): return -1
-    if keylen > KEYBYTES.uint: return -1
+    if (input == nil) and (inlen > 0'u): return
+    if output == nil: return
+    if (key == nil) and (keylen > 0'u): return
+    if (outlen != 0'u32) and (outlen > OUTBYTES.uint): return
+    if keylen > KEYBYTES.uint: return
 
     init(S, outlen, key, keylen)
     update(S, input, inlen)
