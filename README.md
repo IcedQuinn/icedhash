@@ -3,7 +3,7 @@
 ## API
 
  - `import icedhash_blake/blake2b` for blake2b.
- - `import icedhash_blake/blake2b` for blake2s.
+ - `import icedhash_blake/blake2s` for blake2s.
  - `import icedhash_blake` for everything.
 
 ### One-shot
@@ -16,8 +16,8 @@ proc blake2s*(output, input, key: pointer;
 
 Process an entire message in one sequential pass.
 
- - **output, outlen**. Buffer to store the finished digest. Length must be between one and sixty-four bytes.
- - **input, inlen**. Buffer holding the message to hash. Can be nil (but why?)
+ - **output, outlen**. Buffer to store the finished digest. Length must be between one and sixty-four bytes for 2b, or one and thirty-two bytes for 2s.
+ - **input, inlen**. Buffer holding the message to hash. Can be nil (but why?) Length must be between zero and sixty-four bytes for 2b, or one and thirty-two bytes for 2s.
  - **key, keylen**. Buffer holding the key for MAC signing. Can be nil.
 
 ### Steaming
