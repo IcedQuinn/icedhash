@@ -2,6 +2,8 @@
 
 ## API
 
+ - `import icedhash_blake/blake2b` for blake2b.
+
 ### One-shot
 ```nim
 proc blake2b*(output, input, key: pointer;
