@@ -8,6 +8,8 @@
       - [One-shot](#one-shot)
       - [Steaming](#steaming)
       - [Advanced](#advanced)
+  - [Spooky V2](#spooky-v2)
+    - [API](#api-1)
       - [One-shot](#one-shot-1)
       - [Steaming](#steaming-1)
   - [Dependencies](#dependencies)
@@ -127,7 +129,11 @@ proc `lastnode=`* (self: var Blake2sState;
 
 If you are using Blake for tree hashing, you set this to `true` before
 calling `final` when dealing with the last sibling in a particular
-subtree. \#\# Spooky V2 \#\#\# API
+subtree.
+
+## Spooky V2
+
+### API
 
   - `import icedhash/spooky2`
 
@@ -189,5 +195,6 @@ digests.
 
 ## License
 
-Blake2b and Blake2s are available under CC-0, as the upstream authors
-intended.
+  - Blake2b and Blake2s are available under CC-0, as the upstream
+    authors intended.
+  - SpookyV2 is available under CC-0 (upstream is public domain.)
