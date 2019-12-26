@@ -6,12 +6,12 @@
   - [Blake](#blake)
     - [API](#api)
       - [One-shot](#one-shot)
-      - [Steaming](#steaming)
+      - [Streaming](#streaming)
       - [Advanced](#advanced)
   - [Spooky V2](#spooky-v2)
     - [API](#api-1)
       - [One-shot](#one-shot-1)
-      - [Steaming](#steaming-1)
+      - [Streaming](#streaming-1)
   - [Dependencies](#dependencies)
   - [License](#license)
 
@@ -45,7 +45,7 @@ Process an entire message in one sequential pass.
     or one and thirty-two bytes for 2s.
   - **key, keylen**. Buffer holding the key for MAC signing. Can be nil.
 
-#### Steaming
+#### Streaming
 
 The streaming API is for data which is processed in chunks. It works
 like this:
@@ -155,7 +155,7 @@ It should be repeated that Spooky V2 is *not a cryptographic hash* so
 salting is not equivalent to MAC signing (as it is with Blake.) It is
 still useful if you need to make hash collisions a bit less predictable.
 
-#### Steaming
+#### Streaming
 
 The streaming API is for data which is processed in chunks. It works
 like this:

@@ -18,7 +18,7 @@ It should be repeated that Spooky V2 is *not a cryptographic hash* so
 salting is not equivalent to MAC signing (as it is with Blake.) It is
 still useful if you need to make hash collisions a bit less predictable.
 
-#### Steaming
+#### Streaming
 The streaming API is for data which is processed in chunks. It works like this:
 
  - Call `init` to prepare a state object,

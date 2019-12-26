@@ -18,7 +18,7 @@ Process an entire message in one sequential pass.
  - **input, inlen**. Buffer holding the message to hash. Can be nil (but why?) Length must be between zero and sixty-four bytes for 2b, or one and thirty-two bytes for 2s.
  - **key, keylen**. Buffer holding the key for MAC signing. Can be nil.
 
-#### Steaming
+#### Streaming
 The streaming API is for data which is processed in chunks. It works like this:
 
  - Call `init` to prepare a state object,
