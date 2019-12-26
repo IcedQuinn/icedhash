@@ -22,5 +22,10 @@ template `+=`*(a: var pointer; offset: uint32) =
 template `+=`*(a: var pointer; offset: uint) =
    a += offset.int
 
-proc `+=`*(a: var pointer; offset: int) =
+proc `+=`*(a: var pointer; offset: int) {.inline.} =
    a = cast[pointer](cast[int](a) + offset)
+
+proc seek*[T](a: var ptr T; offset: int) {.inline.} =
+    var x = cast[pointer](a)
+    x += offset * T.sizeof
+    a = cast[ptr T](x)
