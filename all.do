@@ -1,1 +1,1 @@
-redo-ifchange src/test
+redo-ifchange src/test README.md
