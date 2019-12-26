@@ -8,6 +8,8 @@
 ##
 ## Blake2b supports salting, MAC, and tree hashing.
 
+import primitives
+
 const
    BLOCKBYTES    = 128
    OUTBYTES      = 64
@@ -70,12 +72,6 @@ static:
     # only a hard requirement because i don't swap it on big endy systems yet
     assert cpu_endian == little_endian
 
-proc `[]`[T](a: ptr T; b: int): T {.inline.} =
-    return cast[ptr T](cast[int](a) + (b * T.sizeof))[]
-
-proc `[]=`[T](a: ptr T; b: int; c: T) {.inline.} =
-    cast[ptr T](cast[int](a) + (b * T.sizeof))[] = c
-
 proc lastblock*(self: var Blake2bState): bool =
     ## Returns whether the state is looking at the last block to be
     ## processed. Typically set by `final`.
@@ -94,16 +90,6 @@ proc `lastnode=`*(self: var Blake2bState; b: bool) =
     ## hashes, and you have finished hashing the last sibling at a
     ## particular level.
     self.f[1] = if b: uint64.high else: 0
-
-# TODO extract pointer arithmetic to another module
-template `+=`(a: var pointer; offset: uint32) =
-   a += offset.int
-
-template `+=`(a: var pointer; offset: uint) =
-   a += offset.int
-
-proc `+=`(a: var pointer; offset: int) =
-   a = cast[pointer](cast[int](a) + offset)
 
 proc inc(S: var Blake2bState; amount: uint64) =
     ## Discount 128-bit integer addition; first adds amount to least
@@ -127,10 +113,6 @@ proc init*(S: var Blake2bState; P: var Blake2bParam) =
         hh[i] = vv[i] xor pp[i]
 
     S.outlen = P.digest_length
-
-proc rot(a: uint64; c: int): uint64 {.inline.} =
-    # Rotation; stolen from blake's reference implementation
-    return (a shr c) + (a shl (64-c))
 
 proc G(r, g: int; m: ptr uint64; a, b, c, d: var uint64) =
     a = a + b + m[SIGMA[r][2*g].int]
