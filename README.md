@@ -1,12 +1,13 @@
-# Iced Quinn's Blake Implementations
+# Iced Quinn's Thing Hasher
 
-## API
+## Blake
+### API
 
  - `import icedhash_blake/blake2b` for blake2b.
  - `import icedhash_blake/blake2s` for blake2s.
  - `import icedhash_blake` for everything.
 
-### One-shot
+#### One-shot
 ```nim
 proc blake2b*(output, input, key: pointer;
               outlen, inlen, keylen: uint)
@@ -20,7 +21,7 @@ Process an entire message in one sequential pass.
  - **input, inlen**. Buffer holding the message to hash. Can be nil (but why?) Length must be between zero and sixty-four bytes for 2b, or one and thirty-two bytes for 2s.
  - **key, keylen**. Buffer holding the key for MAC signing. Can be nil.
 
-### Steaming
+#### Steaming
 The streaming API is for data which is processed in chunks. It works like this:
 
  - Call `init` to prepare a state object,
@@ -58,7 +59,7 @@ proc final* (S: var Blake2sState;
              outlen: uint)
 ```
 
-### Advanced
+#### Advanced
 ```nim
 proc init*        (S: var Blake2bState;
                    P: var Blake2bParam)
@@ -104,5 +105,4 @@ For running the test suite; otherwise use whatever you want to deal with digests
  - [redo](https://github.com/apenwarr/redo)
 
 ## License
-In the spirit of open cryptography, and because its the upstream
-license as well, this particular module is available under CC-0.
+Blake2b and Blake2s are available under CC-0, as the upstream authors intended.
