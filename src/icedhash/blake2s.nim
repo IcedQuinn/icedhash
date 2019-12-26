@@ -9,11 +9,11 @@
 ## Blake2s supports salting, MAC, and tree hashing.
 
 const
-   BLOCKBYTES*    = 64
-   OUTBYTES*      = 32
-   KEYBYTES*      = 32
-   SALTBYTES*     = 8
-   PERSONALBYTES* = 8
+   BLOCKBYTES    = 64
+   OUTBYTES      = 32
+   KEYBYTES      = 32
+   SALTBYTES     = 8
+   PERSONALBYTES = 8
 
 let IV: array[8, uint32] = [
       0x6a09e667'u32,
