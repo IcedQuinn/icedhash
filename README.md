@@ -3,9 +3,8 @@
 ## Blake
 ### API
 
- - `import icedhash_blake/blake2b` for blake2b.
- - `import icedhash_blake/blake2s` for blake2s.
- - `import icedhash_blake` for everything.
+ - `import icedhash/blake2b` for blake2b.
+ - `import icedhash/blake2s` for blake2s.
 
 #### One-shot
 ```nim
