@@ -1,4 +1,7 @@
 ## Spooky V2
+
+WARNING: SpookyV2 hashes are currently broken in this version.
+
 ### API
 
  - `import icedhash/spooky2`

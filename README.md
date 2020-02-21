@@ -1,21 +1,10 @@
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
-
-- [Iced Quinn's Thing Hasher](#icedquinns-thing-hasher)
-  - [Blake](#blake)
-    - [API](#api)
-      - [One-shot](#one-shot)
-      - [Streaming](#streaming)
-      - [Advanced](#advanced)
-  - [Spooky V2](#spooky-v2)
-    - [API](#api-1)
-      - [One-shot](#one-shot-1)
-      - [Streaming](#streaming-1)
-  - [Dependencies](#dependencies)
-  - [License](#license)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+  - [Iced Quinn's Thing Hasher](#icedquinns-thing-hasher)
+      - [Blake](#blake)
+          - [API](#api)
+      - [Spooky V2](#spooky-v2)
+          - [API](#api-1)
+      - [Dependencies](#dependencies)
+      - [License](#license)
 
 # Iced Quinn's Thing Hasher
 
@@ -132,6 +121,8 @@ calling `final` when dealing with the last sibling in a particular
 subtree.
 
 ## Spooky V2
+
+WARNING: SpookyV2 hashes are currently broken in this version.
 
 ### API
 
