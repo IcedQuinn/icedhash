@@ -1,0 +1,69 @@
+== XXHash
+
+XXHash is a non-cryptographic hash by
+https://github.com/Cyan4973/xxHash[Yann Collet].
+
+A streaming interface is supported but the general intended use for XXHash
+is through the one-shot `xxh32` or `xxh64` procedures.
+
+Unlike Spooky and Blake the output size of a hash is always fixed by
+which version of the algorithm you use. `xxh32` creates 32-bit hashes
+and `xxh64` creates 64-bit hashes.
+
+=== API
+
+- `import icedhash/xxhash`
+
+==== One-shot
+
+[source,nim]
+----
+proc xxh32*(input: pointer; len: int; seed: XXH32_hash): XXH32_hash
+proc xxh64*(input: pointer; len: int; seed: XXH64_hash): XXH64_hash
+----
+
+Process an entire message in one sequential pass.
+
+- *input*. Pointer to the first byte to be hashed.
+- *len*. Number of bytes to be hashed.
+- *seed*. A seed, salt, or key. Allows different hash results for the same
+input.
+
+NOTE: As a _non-cryptographic_ hash this is more reliable for probablistic
+algorithms which need more than one hash per object, or as a thin layer of
+security to make it harder for attackers to design malicious payloads.
+It should not be used in place of a proper MAC.
+
+==== Streaming
+
+The streaming API is for data which is processed in chunks. It works
+like this:
+
+- Call `init` to prepare a state object,
+- Call `update` to feed data to the hasher as it comes in,
+- Call `final` when you are done.
+
+[source,nim]
+----
+proc init*(statePtr: var XXH32_state;
+           seed: XXH32_hash): XXH_errorcode
+
+proc init*(statePtr: var XXH64_state;
+           seed: XXH64_hash): XXH_errorcode
+----
+
+[source,nim]
+----
+proc update*(state: var XXH32_state;
+             input: pointer;
+             len: int): XXH_errorcode
+proc update*(state: var XXH64_state;
+             input: pointer;
+             len: int): XXH_errorcode
+----
+
+[source,nim]
+----
+proc final*(state: var XXH32_state): XXH32_hash
+proc final*(state: var XXH64_state): XXH64_hash
+----

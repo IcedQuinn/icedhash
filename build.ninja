@@ -1,0 +1,9 @@
+
+rule adoc2xml
+    command = asciidoctor -b docbook5 $in -o $out
+
+rule xml2md
+    command = pandoc -f docbook $in -t gfm > $out
+
+build docs/readme-base.xml: adoc2xml docs/readme-base.adoc | docs/blake.adoc docs/spooky.adoc docs/xxhash.adoc
+build README.md: xml2md docs/readme-base.xml

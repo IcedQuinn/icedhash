@@ -299,7 +299,7 @@ proc init*(statePtr: var XXH32_state; seed: XXH32_hash): XXH_errorcode =
 
     return XXH_OK
 
-proc update*(state: ptr XXH32_state; input: pointer; len: int): XXH_errorcode =
+proc update*(state: var XXH32_state; input: pointer; len: int): XXH_errorcode =
     if input == nil:
         return XXH_OK;
 
