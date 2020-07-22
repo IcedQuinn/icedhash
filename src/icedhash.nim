@@ -5,5 +5,3 @@ export blake2s
 import icedhash/spooky2
 export spooky2
 
-when is_main_module:
-    include icedhash/test
