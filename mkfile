@@ -17,8 +17,8 @@ push:V:
     git push github
 
 README.md: $adocs
-    asciidoctor -b docbook5 docs/readme-base.adoc -o docs/readme-base.xml
-    pandoc -f docbook docs/readme-base.xml -t gfm -o README.md
+    asciidoctor -b docbook5 docs/readme-base.adoc -o docs/readme.xml
+    pandoc -f docbook docs/readme.xml -t gfm -o README.md
 
 docs:V: README.md
 

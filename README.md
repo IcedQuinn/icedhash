@@ -9,6 +9,10 @@ For end users:
 
 For people hacking on icedhash:
 
+  - Plan 9 compatible `mk`.
+
+  - Perl’s `prove`.
+
   - icedbintext. For converting
     hashes to hexadecimal outputs.
 
@@ -212,65 +216,4 @@ proc update*(state: var XXH64_state;
 ``` nim
 proc final*(state: var XXH32_state): XXH32_hash
 proc final*(state: var XXH64_state): XXH64_hash
-```
-
-## Spooky V2
-
-> **Warning**
-> 
-> SpookyV2 hashes are currently broken in this version.
-
-### API
-
-  - `import icedhash/spooky2`
-
-#### One-shot
-
-``` nim
-proc spooky2*(output, input, key: pointer;
-              outlen, inlen, keylen: uint)
-```
-
-Process an entire message in one sequential pass.
-
-  - **output, outlen**. Buffer to store the finished digest. Length must
-    be between one and eight bytes.
-
-  - **key, keylen**. Buffer holding the key for salting. Can be up to
-    eight bytes.
-
-It should be repeated that Spooky V2 is *not a cryptographic hash* so
-salting is not equivalent to MAC signing (as it is with Blake.) It is
-still useful if you need to make hash collisions a bit less predictable.
-
-#### Streaming
-
-The streaming API is for data which is processed in chunks. It works
-like this:
-
-  - Call `init` to prepare a state object,
-
-  - Call `update` to feed data to the hasher as it comes in,
-
-  - Call `final` when you are done.
-
-<!-- end list -->
-
-``` nim
-proc init*  (S: var Spooky2State;
-             outlen: uint64;
-             key: pointer = nil;
-             keylen: uint = 0)
-```
-
-``` nim
-proc update*(S: var Spooky2State;
-             input: pointer;
-             inlen: uint)
-```
-
-``` nim
-proc final* (S: var Spooky2State;
-             output: pointer;
-             outlen: uint)
 ```
