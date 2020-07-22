@@ -1,18 +1,17 @@
 adocs=readme-base blake xxhash spooky
 adocs=${adocs:%=docs/%.adoc}
 
-modules=blake2b blake2s xxhash spooky2
-tests=${modules:%=test-%}
+modules=blake2b blake2s # xxhash spooky2
+tests=${modules:%=t/%.t}
 
-test-%: src/icedhash/%.nim
-    nim c -o:$stem $prereq
+t/%.t: src/icedhash/%.nim
+    nim c -o:t/$stem.t $prereq
 
 check:QV: $tests
-    echo "The tests are not actually run correctly."
-    exit 1
+    prove
 
 clean:V:
-    rm -f $modules
+    rm -f $tests
 
 push:V:
     git push github
