@@ -172,14 +172,12 @@ Process an entire message in one sequential pass.
   - **seed**. A seed, salt, or key. Allows different hash results for
     the same input.
 
-<div class="note">
-
-As a *non-cryptographic* hash this is more reliable for probablistic
-algorithms which need more than one hash per object, or as a thin layer
-of security to make it harder for attackers to design malicious
-payloads. It should not be used in place of a proper MAC.
-
-</div>
+> **Note**
+> 
+> As a *non-cryptographic* hash this is more reliable for probablistic
+> algorithms which need more than one hash per object, or as a thin
+> layer of security to make it harder for attackers to design malicious
+> payloads. It should not be used in place of a proper MAC.
 
 #### Streaming
 
@@ -218,11 +216,9 @@ proc final*(state: var XXH64_state): XXH64_hash
 
 ## Spooky V2
 
-<div class="warning">
-
-SpookyV2 hashes are currently broken in this version.
-
-</div>
+> **Warning**
+> 
+> SpookyV2 hashes are currently broken in this version.
 
 ### API
 
