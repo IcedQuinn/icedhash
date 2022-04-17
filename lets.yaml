@@ -1,0 +1,9 @@
+shell: fish
+
+commands:
+   test:
+      cmd: make check
+
+   push:
+      cmd: git push github iceworks
+
