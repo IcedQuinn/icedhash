@@ -11,7 +11,8 @@ For end users:
 
 For people hacking on icedhash:
 
- - Plan 9 compatible `mk`.
+ - https://lets-cli.org/[Lets] (optional, lets you run tasks)
+ - GNU Make.
  - Perl's `prove`.
  - icedbintext. For converting hashes to hexadecimal outputs.
 

@@ -5,5 +5,7 @@ commands:
       cmd: make check
 
    push:
-      cmd: git push github iceworks
+      cmd: |
+         git push github
+         git push iceworks
 

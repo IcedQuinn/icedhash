@@ -1,29 +1,30 @@
-`icedhash` is a collection of cryptographic and non-cryptographic hashing
-routines which have been ported to native Nim.
+`icedhash` is a collection of cryptographic and non-cryptographic
+hashing routines which have been ported to native Nim.
 
 # Dependencies
 
 For end users:
 
-  - None\!
+-   None!
 
 For people hacking on icedhash:
 
-  - Plan 9 compatible `mk`.
+-   [Lets](https://lets-cli.org/) (optional, lets you run tasks)
 
-  - Perl’s `prove`.
+-   GNU Make.
 
-  - icedbintext. For converting
-    hashes to hexadecimal outputs.
+-   Perl’s `prove`.
+
+-   icedbintext. For converting hashes to hexadecimal outputs.
 
 # License
 
-  - Blake2b and Blake2s are available under CC-0. (Implemented from
+-   Blake2b and Blake2s are available under CC-0. (Implemented from
     paper.)
 
-  - SpookyV2 is available under CC-0. (Ported.)
+-   SpookyV2 is available under CC-0. (Ported.)
 
-  - XXHash is available under BSD. (Ported.)
+-   XXHash is available under BSD. (Ported.)
 
 # Hashes
 
@@ -31,9 +32,9 @@ For people hacking on icedhash:
 
 ### API
 
-  - `import icedhash/blake2b` for blake2b.
+-   `import icedhash/blake2b` for blake2b.
 
-  - `import icedhash/blake2s` for blake2s.
+-   `import icedhash/blake2s` for blake2s.
 
 #### One-shot
 
@@ -46,28 +47,26 @@ proc blake2s*(output, input, key: pointer;
 
 Process an entire message in one sequential pass.
 
-  - **output, outlen**. Buffer to store the finished digest. Length must
+-   **output, outlen**. Buffer to store the finished digest. Length must
     be between one and sixty-four bytes for 2b, or one and thirty-two
     bytes for 2s.
 
-  - **input, inlen**. Buffer holding the message to hash. Can be nil
+-   **input, inlen**. Buffer holding the message to hash. Can be nil
     (but why?) Length must be between zero and sixty-four bytes for 2b,
     or one and thirty-two bytes for 2s.
 
-  - **key, keylen**. Buffer holding the key for MAC signing. Can be nil.
+-   **key, keylen**. Buffer holding the key for MAC signing. Can be nil.
 
 #### Streaming
 
 The streaming API is for data which is processed in chunks. It works
 like this:
 
-  - Call `init` to prepare a state object,
+-   Call `init` to prepare a state object,
 
-  - Call `update` to feed data to the hasher as it comes in,
+-   Call `update` to feed data to the hasher as it comes in,
 
-  - Call `final` when you are done.
-
-<!-- end list -->
+-   Call `final` when you are done.
 
 ``` nim
 proc init*  (S: var Blake2bState;
@@ -158,7 +157,7 @@ and `xxh64` creates 64-bit hashes.
 
 ### API
 
-  - `import icedhash/xxhash`
+-   `import icedhash/xxhash`
 
 #### One-shot
 
@@ -169,32 +168,32 @@ proc xxh64*(input: pointer; len: int; seed: XXH64_hash): XXH64_hash
 
 Process an entire message in one sequential pass.
 
-  - **input**. Pointer to the first byte to be hashed.
+-   **input**. Pointer to the first byte to be hashed.
 
-  - **len**. Number of bytes to be hashed.
+-   **len**. Number of bytes to be hashed.
 
-  - **seed**. A seed, salt, or key. Allows different hash results for
+-   **seed**. A seed, salt, or key. Allows different hash results for
     the same input.
 
-> **Note**
-> 
-> As a *non-cryptographic* hash this is more reliable for probablistic
-> algorithms which need more than one hash per object, or as a thin
-> layer of security to make it harder for attackers to design malicious
-> payloads. It should not be used in place of a proper MAC.
+<div class="note">
+
+As a *non-cryptographic* hash this is more reliable for probablistic
+algorithms which need more than one hash per object, or as a thin layer
+of security to make it harder for attackers to design malicious
+payloads. It should not be used in place of a proper MAC.
+
+</div>
 
 #### Streaming
 
 The streaming API is for data which is processed in chunks. It works
 like this:
 
-  - Call `init` to prepare a state object,
+-   Call `init` to prepare a state object,
 
-  - Call `update` to feed data to the hasher as it comes in,
+-   Call `update` to feed data to the hasher as it comes in,
 
-  - Call `final` when you are done.
-
-<!-- end list -->
+-   Call `final` when you are done.
 
 ``` nim
 proc init*(statePtr: var XXH32_state;
