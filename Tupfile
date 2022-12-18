@@ -1,0 +1,2 @@
+: foreach src/icedhash/*.nim |> nim c -o:%o %f |> t/%B.t
+
