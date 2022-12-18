@@ -1,11 +1,26 @@
 shell: fish
 
 commands:
-   test:
-      cmd: make check
+   build:
+      cmd: |
+         if ! test -d .tup
+            tup init
+         end
+         tup
 
    push:
       cmd: |
          git push github
          git push iceworks
+
+   test:
+      depends:
+         - build
+      cmd: |
+         prove
+
+   readme:
+      cmd: |
+         asciidoctor -b docbook5 docs/readme-base.adoc -o docs/readme.xml
+         pandoc -f docbook docs/readme.xml -t gfm -o README.md
 
