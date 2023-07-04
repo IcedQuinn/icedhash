@@ -632,3 +632,9 @@ proc canonicalFromHash*(dst: var XXH64_canonical; hash: XXH64_hash) =
 
 proc hashFromCanonical*(src: XXH64_canonical): XXH64_hash =
     return XXH_readBE64(unsafeaddr src)
+
+when is_main_module:
+   echo "TAP version 13"
+   echo "1..1"
+   echo "Bail out! no tests implemented"
+

@@ -218,6 +218,9 @@ proc spooky2*(
         final(s, output, outlen)
 
 when is_main_module:
+    echo "TAP version 13"
+    echo "Bail out! algorithm is known to be implemented wrong"
+
     import icedbintext
     var x = "i am the toad"
     var buffer: array[SPOOKY2_MAX_OUT_BYTES, uint8]
@@ -225,3 +228,5 @@ when is_main_module:
         addr buffer[0], addr x[0], nil,
         SPOOKY2_MAX_OUT_BYTES.uint, x.len.uint, 0'u)
     echo(buffer.to_hex_string_lower)
+
+

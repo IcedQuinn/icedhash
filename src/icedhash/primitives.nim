@@ -29,3 +29,9 @@ proc seek*[T](a: var ptr T; offset: int) {.inline.} =
     var x = cast[pointer](a)
     x += offset * T.sizeof
     a = cast[ptr T](x)
+
+when is_main_module:
+   echo "TAP version 13"
+   echo "1..1"
+   echo "Bail out! no tests implemented"
+
