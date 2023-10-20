@@ -11,7 +11,7 @@ commands:
    push:
       cmd: |
          git push github
-         git push iceworks
+         git push sourcehut
 
    test:
       depends:
