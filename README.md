@@ -28,7 +28,7 @@ For people hacking on icedhash:
 
 # Hashes
 
-## Blake
+## Blake 2
 
 ### API
 
@@ -142,6 +142,10 @@ proc `lastnode=`*(self: var Blake2sState;
 If you are using Blake for tree hashing, you set this to `true` before
 calling `final` when dealing with the last sibling in a particular
 subtree.
+
+## Blake 3
+
+Patches welcome.
 
 ## XXHash
 

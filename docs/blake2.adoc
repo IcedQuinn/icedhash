@@ -1,4 +1,4 @@
-== Blake
+== Blake 2
 
 === API
 

@@ -25,7 +25,9 @@ For people hacking on icedhash:
 == Hashes
 :leveloffset: +1
 
-include::blake.adoc[]
+include::blake2.adoc[]
+
+include::blake3.adoc[]
 
 include::xxhash.adoc[]
 
