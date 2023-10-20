@@ -1,0 +1,9 @@
+syntax(2)
+
+test_suite 'icedhash'
+tap_test_program { name='blake2b.t' }
+tap_test_program {name='blake2s.t'}
+tap_test_program {name='primitives.t'}
+tap_test_program {name='spooky2.t'}
+tap_test_program {name='xxhash.t'}
+
