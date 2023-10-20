@@ -1,7 +1,17 @@
 = Iced Quinn's Thing Hasher
 
-`icedhash` is a collection of cryptographic and non-cryptographic hashing
-routines which have been ported to native Nim.
+`icedhash` is a collection of cryptographic and non-cryptographic hashing routines which have been ported to native Nim.
+
+include::conventions.adoc[]
+
+== Hashes
+:leveloffset: +1
+
+include::blake2.adoc[]
+
+include::blake3.adoc[]
+
+include::xxhash.adoc[]
 
 == Dependencies
 
@@ -22,13 +32,4 @@ For people hacking on icedhash:
  - Blake2b and Blake2s are available under CC-0. (Implemented from paper.)
  - SpookyV2 is available under CC-0. (Ported.)
  - XXHash is available under BSD. (Ported.)
-
-== Hashes
-:leveloffset: +1
-
-include::blake2.adoc[]
-
-include::blake3.adoc[]
-
-include::xxhash.adoc[]
 

@@ -1,33 +1,66 @@
 `icedhash` is a collection of cryptographic and non-cryptographic
 hashing routines which have been ported to native Nim.
 
-# Dependencies
+# Conventions
 
-For end users:
+This section will cover the general conventions of hashing algoritms
+included in the project.
 
--   None!
+There are some minor variations depending on the algorithm. There are
+some reasons for that:
 
-For people hacking on icedhash:
+1.  There has not been a "clean up" pass to force all algorithms to have
+    the same signatures,
 
--   [Lets](https://lets-cli.org/) (optional, top-level task runner)
+2.  Algorithms have their own ways of dealing with parameters. For
+    example Blake takes varying length keys, XXHash does not.
 
--   [kyua](https://github.com/jmmv/kyua) (optional, runs TAP tests.)
+## Seeds and Keys
 
--   [asciidoctor](https://docs.asciidoctor.org/) (optional, to
-    regenerate the README.)
+Some hashing algorithms have a concept of *keys* or *seeds*. This is a
+piece of secondary information you can use to alter the result of a hash
+algorithm.
 
--   [pandoc](https://pandoc.org/) (optional, to regenerate the README.)
+For example if you create a random seed when starting a program, and use
+this seed in the hash function that powers your hash tables, every run
+of the program will place values at different locations. This means an
+adversary cannot predict where you will store some value and thus
+frustrates that method of attacking software.
 
--   icedbintext. For converting hashes to hexadecimal outputs.
+In the case of Blake a key can also replace the need for using HMACs.
+Where you would use a separate HMAC key and an HMAC function you instead
+just use the key capabilities of Blake.
 
-# License
+## One-shot APIs
 
--   Blake2b and Blake2s are available under CC-0. (Implemented from
-    paper.)
+We refer to functions which take all input and produce a finalized
+output in one go as *one-shot* functions. They typically have a
+signature like this:
 
--   SpookyV2 is available under CC-0. (Ported.)
+``` nim
+proc algorithm*(output, input: pointer; output_length, input_length: int)
+```
 
--   XXHash is available under BSD. (Ported.)
+<div class="note">
+
+One-shot calls are *sometimes* more efficient than using the streaming
+API. You should use them when you have all of the data on hand such as
+with very small strings.
+
+</div>
+
+## Streaming APIs
+
+Streaming APIs involve more than a single function call. Here is a brief
+overview of that:
+
+-   State, which holds values between calls.
+
+-   `init`, which prepares state for use.
+
+-   `update`, which feeds more bytes in to the state.
+
+-   `final`, which finalizes the hash and returns the value.
 
 # Hashes
 
@@ -223,3 +256,31 @@ proc update*(state: var XXH64_state;
 proc final*(state: var XXH32_state): XXH32_hash
 proc final*(state: var XXH64_state): XXH64_hash
 ```
+
+## Dependencies
+
+For end users:
+
+-   None!
+
+For people hacking on icedhash:
+
+-   [Lets](https://lets-cli.org/) (optional, top-level task runner)
+
+-   [kyua](https://github.com/jmmv/kyua) (optional, runs TAP tests.)
+
+-   [asciidoctor](https://docs.asciidoctor.org/) (optional, to
+    regenerate the README.)
+
+-   [pandoc](https://pandoc.org/) (optional, to regenerate the README.)
+
+-   icedbintext. For converting hashes to hexadecimal outputs.
+
+## License
+
+-   Blake2b and Blake2s are available under CC-0. (Implemented from
+    paper.)
+
+-   SpookyV2 is available under CC-0. (Ported.)
+
+-   XXHash is available under BSD. (Ported.)
