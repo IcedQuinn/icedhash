@@ -21,10 +21,11 @@ For end users:
 
 For people hacking on icedhash:
 
- - https://lets-cli.org/[Lets] (optional, top-level task runner)
- - https://github.com/jmmv/kyua[kyua] (optional, runs TAP tests.)
- - https://docs.asciidoctor.org/[asciidoctor] (optional, to regenerate the README.)
- - https://pandoc.org/[pandoc] (optional, to regenerate the README.)
+ - https://lets-cli.org/[Lets]. Top-level task runner.
+ - https://github.com/jmmv/kyua[kyua]. To run the test suites and generate reports.
+ - https://docs.asciidoctor.org/[asciidoctor]. To generate the README.
+ - https://pandoc.org/[pandoc]. To generate the README.
+ - https://gittup.org/tup/manual.html[tup]. For compiling tests.
  - icedbintext. For converting hashes to hexadecimal outputs.
 
 == License

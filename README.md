@@ -265,14 +265,17 @@ For end users:
 
 For people hacking on icedhash:
 
--   [Lets](https://lets-cli.org/) (optional, top-level task runner)
+-   [Lets](https://lets-cli.org/). Top-level task runner.
 
--   [kyua](https://github.com/jmmv/kyua) (optional, runs TAP tests.)
+-   [kyua](https://github.com/jmmv/kyua). To run the test suites and
+    generate reports.
 
--   [asciidoctor](https://docs.asciidoctor.org/) (optional, to
-    regenerate the README.)
+-   [asciidoctor](https://docs.asciidoctor.org/). To generate the
+    README.
 
--   [pandoc](https://pandoc.org/) (optional, to regenerate the README.)
+-   [pandoc](https://pandoc.org/). To generate the README.
+
+-   [tup](https://gittup.org/tup/manual.html). For compiling tests.
 
 -   icedbintext. For converting hashes to hexadecimal outputs.
 
