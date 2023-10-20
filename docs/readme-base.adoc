@@ -11,9 +11,10 @@ For end users:
 
 For people hacking on icedhash:
 
- - https://lets-cli.org/[Lets] (optional, lets you run tasks)
- - GNU Make.
- - Perl's `prove`.
+ - https://lets-cli.org/[Lets] (optional, top-level task runner)
+ - https://github.com/jmmv/kyua[kyua] (optional, runs TAP tests.)
+ - https://docs.asciidoctor.org/[asciidoctor] (optional, to regenerate the README.)
+ - https://pandoc.org/[pandoc] (optional, to regenerate the README.)
  - icedbintext. For converting hashes to hexadecimal outputs.
 
 == License
