@@ -30,6 +30,15 @@ proc seek*[T](a: var ptr T; offset: int) {.inline.} =
     x += offset * T.sizeof
     a = cast[ptr T](x)
 
+{.experimental: "strictNotNil".}
+proc prepare_output*(output: pointer not nil; out_len, used_len: uint) =
+    assert output != nil
+
+    # nothing to prepare; all will be overridden
+    if out_len < used_len: return
+    # XXX can make more efficient by only zeroing what we won't write, but have to unit test it
+    zeromem(output, out_len)
+
 when is_main_module:
    echo "TAP version 13"
    echo "1..1"
