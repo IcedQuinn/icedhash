@@ -3,17 +3,13 @@ hashing routines which have been ported to native Nim.
 
 # Conventions
 
-This section will cover the general conventions of hashing algoritms
-included in the project.
+In this section we will describe hash functions in a general way.
 
-There are some minor variations depending on the algorithm. There are
-some reasons for that:
-
-1.  There has not been a "clean up" pass to force all algorithms to have
-    the same signatures,
-
-2.  Algorithms have their own ways of dealing with parameters. For
-    example Blake takes varying length keys, XXHash does not.
+Each hash function has its own capabilities and slightly different
+parameters. If you wish to make use of those special features then you
+will need to create wrappers to specific implementations. Fortunately
+those wrappers are cheap in Nim—​they are likely to be inlined away and
+you will pay very little or not at all.
 
 ## Seeds and Keys
 
@@ -21,46 +17,46 @@ Some hashing algorithms have a concept of *keys* or *seeds*. This is a
 piece of secondary information you can use to alter the result of a hash
 algorithm.
 
-For example if you create a random seed when starting a program, and use
-this seed in the hash function that powers your hash tables, every run
-of the program will place values at different locations. This means an
-adversary cannot predict where you will store some value and thus
-frustrates that method of attacking software.
-
-In the case of Blake a key can also replace the need for using HMACs.
-Where you would use a separate HMAC key and an HMAC function you instead
-just use the key capabilities of Blake.
+There is no generic way to handle these. Some algorithms like the Blake
+and XXHash family allow taking salt or a seed as a separate parameter.
+Some algorithms do not support this at all—​you have to rely on HMAC or
+some other salting mechanism.
 
 ## One-shot APIs
 
-We refer to functions which take all input and produce a finalized
-output in one go as *one-shot* functions. They typically have a
-signature like this:
+A one-shot API consumes an entire buffer, calculates a hash, and outputs
+that hash in a single function call. These are based on the following
+function signature:
 
 ``` nim
-proc algorithm*(output, input: pointer; output_length, input_length: int)
+OneShotHash* = proc(
+  output, input: pointer;
+  out_len, in_len: int) {.nimcall.}
 ```
-
-<div class="note">
-
-One-shot calls are *sometimes* more efficient than using the streaming
-API. You should use them when you have all of the data on hand such as
-with very small strings.
-
-</div>
 
 ## Streaming APIs
 
-Streaming APIs involve more than a single function call. Here is a brief
-overview of that:
+Streaming APIs consist of multiple distinct steps:
 
--   State, which holds values between calls.
+1.  Initializing the stream kernel
 
--   `init`, which prepares state for use.
+2.  Feeding data on a piece-by-piece basis
 
--   `update`, which feeds more bytes in to the state.
+3.  Finalization; telling a stream kernel there is no more data to
+    process and extracting the actual hash
 
--   `final`, which finalizes the hash and returns the value.
+As of 20231107 this is now based on a \[type
+concept\](<https://nim-lang.org/docs/manual_experimental.html#concepts>):
+
+``` nim
+StreamingHash* = concept var x
+  # Prepares the hasher for streaming.
+  init(x)
+  # Pushes some amount of bytes in to the device.
+  update(x, pointer, int)
+  # Finish the job and output the bytes
+  final(x, pointer, int)
+```
 
 # Hashes
 
