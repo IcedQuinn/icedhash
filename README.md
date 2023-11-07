@@ -198,8 +198,8 @@ and `xxh64` creates 64-bit hashes.
 #### One-shot
 
 ``` nim
-proc xxh32*(input: pointer; len: int; seed: XXH32_hash): XXH32_hash
-proc xxh64*(input: pointer; len: int; seed: XXH64_hash): XXH64_hash
+proc xxh32*(input: pointer; len: int; seed: uint32): uint32
+proc xxh64*(input: pointer; len: int; seed: uint64): uint64
 ```
 
 Process an entire message in one sequential pass.
@@ -232,11 +232,11 @@ like this:
 -   Call `final` when you are done.
 
 ``` nim
-proc init*(statePtr: var XXH32_state;
-           seed: XXH32_hash): XXH_errorcode
+proc init*(state: var XXH32_state;
+           seed: XXH32_hash)
 
-proc init*(statePtr: var XXH64_state;
-           seed: XXH64_hash): XXH_errorcode
+proc init*(state: var XXH64_state;
+           seed: XXH64_hash)
 ```
 
 ``` nim
@@ -249,8 +249,8 @@ proc update*(state: var XXH64_state;
 ```
 
 ``` nim
-proc final*(state: var XXH32_state): XXH32_hash
-proc final*(state: var XXH64_state): XXH64_hash
+proc final*(state: var XXH32_state; output: pointer; out_len: uint)
+proc final*(state: var XXH64_state; output: pointer; out_len: uint)
 ```
 
 ## Dependencies
