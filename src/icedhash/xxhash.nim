@@ -333,7 +333,7 @@ proc update*(state: var XXH32_state; input: pointer; len: int) =
         copymem(cast[pointer](addr state.mem32), p, z)
         state.memsize = z.uint32
 
-proc final*(state: var XXH32_state): uint32 =
+proc final*(state: var XXH32_state; output: pointer; out_len: uint) =
     var h32 {.noinit.}: uint32
 
     if state.large_len > 0:
@@ -343,7 +343,9 @@ proc final*(state: var XXH32_state): uint32 =
 
     h32 += state.total_len_32;
 
-    return XXH32_finalize(h32, cast[ptr uint8](addr state.mem32), state.memsize.int, XXH_aligned)
+    var hash = XXH32_finalize(h32, cast[ptr uint8](addr state.mem32), state.memsize.int, XXH_aligned)
+    if output != nil:
+        copy_out(output, out_len, hash)
 
 proc canonicalFromHash*(dst: var XXH32_canonical; hash: uint32) =
     var yhash = hash
@@ -573,7 +575,7 @@ proc update*(state: var XXH64_state; input: pointer; len: int) =
         copymem(addr state.mem64, p, bEnd-p)
         state.memsize = cast[uint32](bEnd - p)
 
-proc final*(state: var XXH64_state): uint64 =
+proc final*(state: var XXH64_state; output: pointer; out_len: uint) =
     var h64: uint64
 
     if state.total_len >= 32:
@@ -593,7 +595,9 @@ proc final*(state: var XXH64_state): uint64 =
 
     h64 += state.total_len.uint64
 
-    return XXH64_finalize(h64, cast[ptr uint8](addr state.mem64), state.total_len.int, XXH_aligned);
+    var hash = XXH64_finalize(h64, cast[ptr uint8](addr state.mem64), state.total_len.int, XXH_aligned)
+    if output != nil:
+        copy_out(output, out_len, hash)
 
 proc canonicalFromHash*(dst: var XXH64_canonical; hash: uint64) =
     var yhash = hash
