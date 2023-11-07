@@ -239,9 +239,10 @@ proc final*(S: var Blake2bState; layer_last: bool; output: pointer; outlen: uint
 
     compress(S, addr S.buf[0])
 
-    if output == nil: return
-
-    copymem(output, addr S.h[0], outlen)
+    if output != nil:
+        # TODO recheck what maximum blake output actually is
+        prepare_output(output, outlen, outlen)
+        copymem(output, addr S.h[0], outlen)
 
 proc blake2b*(output, input, key: pointer; outlen, inlen, keylen: uint) =
     ## Utility function that accepts an output buffer, optional
