@@ -33,6 +33,8 @@
 #   - xxHash homepage: https://www.xxhash.com
 #   - xxHash source repository: https://github.com/Cyan4973/xxHash
 
+import primitives
+
 const
     XXH_VERSION_MAJOR*: int   = 0
     XXH_VERSION_MINOR*: int   = 7
@@ -110,21 +112,6 @@ type
 static:
     assert sizeof(XXH32_canonical) == sizeof(uint32)
     assert sizeof(XXH64_canonical) == sizeof(uint64)
-
-proc `+`[K, T:SomeInteger](a: ptr K; b: T): ptr K {.inline.} =
-    result = cast[ptr K](cast[int](a) + (b.int * K.sizeof))
-
-proc `-`[K, T:SomeInteger](a: ptr K; b: T): ptr K {.inline.} =
-    result = cast[ptr K](cast[int](a) - (b.int * K.sizeof))
-
-proc `+`[K](a, b: ptr K): ptr K {.inline.} =
-    result = cast[ptr K](cast[int](a) + cast[int](b))
-
-proc `-`[K](a, b: ptr K): ptr K {.inline.} =
-    result = cast[ptr K](cast[int](a) - cast[int](b))
-
-proc `+=`[K, T:SomeInteger](a: var ptr K; b: T) {.inline.} =
-    a = a + b
 
 proc XXH_read32(memPtr: pointer): uint32 =
     ## Portable and safe solution. Generally efficient.
@@ -342,7 +329,7 @@ proc update*(state: var XXH32_state; input: pointer; len: int) =
         state.v4 = v4
 
     if p < bEnd:
-        let z = cast[int](bEnd - p)
+        let z = bEnd - p
         copymem(cast[pointer](addr state.mem32), p, z)
         state.memsize = z.uint32
 
@@ -583,7 +570,7 @@ proc update*(state: var XXH64_state; input: pointer; len: int) =
         state.v4 = v4
 
     if p < bEnd:
-        copymem(addr state.mem64, p, cast[int](bEnd-p))
+        copymem(addr state.mem64, p, bEnd-p)
         state.memsize = cast[uint32](bEnd - p)
 
 proc final*(state: var XXH64_state): uint64 =

@@ -16,14 +16,20 @@ proc `[]=`*[T](a: ptr T; b: int; c: T) {.inline.} =
     ## Setting for pointer arithmetic.
     cast[ptr T](cast[int](a) + (b * T.sizeof))[] = c
 
-template `+=`*(a: var pointer; offset: uint32) =
-   a += offset.int
+proc `+=`*[T:SomeInteger](a: var pointer; offset: T) {.inline.} =
+   a = cast[pointer](cast[int](a) + offset.int)
 
-template `+=`*(a: var pointer; offset: uint) =
-   a += offset.int
+proc `+=`*[K;T:SomeInteger](a: var ptr K; offset: T) {.inline.} =
+   a += K.sizeof*offset.int
 
-proc `+=`*(a: var pointer; offset: int) {.inline.} =
-   a = cast[pointer](cast[int](a) + offset)
+proc `+`*[K;T:SomeInteger](a: ptr K; b: T): ptr K {.inline.} =
+    result = cast[ptr K](cast[int](a) + (b.int * K.sizeof))
+
+proc `-`*[K;T:SomeInteger](a: ptr K; b: T): ptr K {.inline.} =
+    result = cast[ptr K](cast[int](a) - (b.int * K.sizeof))
+
+proc `-`*(a, b: pointer): int =
+    return cast[int](a) - cast[int](b)
 
 proc seek*[T](a: var ptr T; offset: int) {.inline.} =
     var x = cast[pointer](a)
