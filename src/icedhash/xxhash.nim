@@ -57,10 +57,6 @@ const
 
 # Definitions
 type
-    XXH_errorcode* = enum
-        XXH_OK
-        XXH_ERROR
-
     XXH32_hash* = uint32
     XXH64_hash* = uint64
 
@@ -286,7 +282,7 @@ proc xxh32*(input: pointer; len: int; seed: XXH32_hash): XXH32_hash =
         return XXH32_endian_align(cast[ptr uint8](input), len, seed, XXH_aligned);
     return XXH32_endian_align(cast[ptr uint8](input), len, seed, XXH_unaligned);
 
-proc init*(statePtr: var XXH32_state; seed: XXH32_hash): XXH_errorcode =
+proc init*(statePtr: var XXH32_state; seed: XXH32_hash) =
     var state: XXH32_state
 
     state.v1 = seed + PRIME32_1 + PRIME32_2;
@@ -297,11 +293,8 @@ proc init*(statePtr: var XXH32_state; seed: XXH32_hash): XXH_errorcode =
     # do not write into reserved, planned to be removed in a future version
     copymem(addr statePtr, addr state, state.sizeof - state.reserved.sizeof)
 
-    return XXH_OK
-
-proc update*(state: var XXH32_state; input: pointer; len: int): XXH_errorcode =
-    if input == nil:
-        return XXH_OK;
+proc update*(state: var XXH32_state; input: pointer; len: int) =
+    if input == nil: return
 
     var p: ptr uint8    = cast[ptr uint8](input)
     let bEnd: ptr uint8 = p + len;
@@ -312,7 +305,7 @@ proc update*(state: var XXH32_state; input: pointer; len: int): XXH_errorcode =
     if (state.memsize.int + len) < 16: # fill in tmp buffer
         copymem(cast[ptr uint8](cast[int](addr state.mem32) + state.memsize.int), input, len)
         state.memsize += len.XXH32_hash
-        return XXH_OK
+        return
 
     if state.memsize >= 0: # some data left from previous update
         copymem(cast[ptr uint8](cast[int](addr state.mem32) + state.memsize.int), input, 16 - state.memsize.int)
@@ -355,8 +348,6 @@ proc update*(state: var XXH32_state; input: pointer; len: int): XXH_errorcode =
         let z = cast[int](bEnd - p)
         copymem(cast[pointer](addr state.mem32), p, z)
         state.memsize = z.XXH32_hash
-
-    return XXH_OK
 
 proc final*(state: var XXH32_state): XXH32_hash =
     var h32 {.noinit.}: uint32
@@ -540,7 +531,7 @@ proc xxh64*(input: pointer; len: int; seed: XXH64_hash): XXH64_hash =
         return XXH64_endian_align(cast[ptr uint8](input), len, seed, XXH_aligned)
     return XXH64_endian_align(cast[ptr uint8](input), len, seed, XXH_unaligned)
 
-proc init*(statePtr: var XXH64_state; seed: XXH64_hash): XXH_errorcode =
+proc init*(statePtr: var XXH64_state; seed: XXH64_hash) =
     var state: XXH64_state
     state.v1 = seed + PRIME64_1 + PRIME64_2
     state.v2 = seed + PRIME64_2
@@ -548,11 +539,9 @@ proc init*(statePtr: var XXH64_state; seed: XXH64_hash): XXH_errorcode =
     state.v4 = seed - PRIME64_1
     # do not write into reserved64, might be removed in a future version
     copymem(addr statePtr, addr state, state.sizeof - state.reserved64.sizeof)
-    return XXH_OK
 
-proc update*(state: var XXH64_state; input: pointer; len: int): XXH_errorcode =
-    if input == nil:
-        return XXH_OK
+proc update*(state: var XXH64_state; input: pointer; len: int) =
+    if input == nil: return
 
     var p: ptr uint8    = cast[ptr uint8](input)
     let bEnd: ptr uint8 = p + len
@@ -562,7 +551,6 @@ proc update*(state: var XXH64_state; input: pointer; len: int): XXH_errorcode =
     if (state.memsize.int + len) < 32: # fill in tmp buffer
         copymem(cast[ptr uint8](cast[int](addr state.mem64) + state.memsize.int), input, len)
         state.memsize += len.uint32
-        return XXH_OK
 
     if state.memsize > 0: # tmp buffer is full
         copymem(cast[ptr uint8](cast[int](addr state.mem64) + state.memsize.int), input, 32 - state.memsize)
@@ -600,8 +588,6 @@ proc update*(state: var XXH64_state; input: pointer; len: int): XXH_errorcode =
     if p < bEnd:
         copymem(addr state.mem64, p, cast[int](bEnd-p))
         state.memsize = cast[XXH32_hash](bEnd - p)
-
-    return XXH_OK
 
 proc final*(state: var XXH64_state): XXH64_hash =
     var h64: uint64
