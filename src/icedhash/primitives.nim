@@ -37,6 +37,7 @@ proc seek*[T](a: var ptr T; offset: int) {.inline.} =
     a = cast[ptr T](x)
 
 {.experimental: "strictNotNil".}
+## Prepares an output buffer for a value of a given size.
 proc prepare_output*(output: pointer not nil; out_len, used_len: uint) =
     assert output != nil
 
@@ -44,6 +45,14 @@ proc prepare_output*(output: pointer not nil; out_len, used_len: uint) =
     if out_len < used_len: return
     # XXX can make more efficient by only zeroing what we won't write, but have to unit test it
     zeromem(output, out_len)
+
+## Copies a simple numeric type to a buffer.
+proc copy_out*[T:SomeInteger](output: pointer not nil; out_len: uint; value: T) =
+    prepare_output(output, out_len, T.sizeof.uint)
+    if T.sizeof.uint >= out_len:
+        copymem(output, addr value, T.sizeof)
+    else:
+        copymem(output, addr value, out_len)
 
 when is_main_module:
    echo "TAP version 13"
