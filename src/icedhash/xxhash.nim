@@ -57,51 +57,48 @@ const
 
 # Definitions
 type
-    XXH32_hash* = uint32
-    XXH64_hash* = uint64
-
     XXH32_state* = object
-        total_len_32: XXH32_hash
-        large_len: XXH32_hash
-        v1: XXH32_hash
-        v2: XXH32_hash
-        v3: XXH32_hash
-        v4: XXH32_hash
-        mem32: array[0..3, XXH32_hash]
-        memsize: XXH32_hash
-        reserved: XXH64_hash
+        total_len_32: uint32
+        large_len: uint32
+        v1: uint32
+        v2: uint32
+        v3: uint32
+        v4: uint32
+        mem32: array[0..3, uint32]
+        memsize: uint32
+        reserved: uint64
 
     XXH64_state* = object
-        total_len: XXH64_hash
-        v1: XXH64_hash
-        v2: XXH64_hash
-        v3: XXH64_hash
-        v4: XXH64_hash
-        mem64: array[0..3, XXH64_hash]
-        memsize: XXH32_hash
-        reserved32: XXH64_hash
-        reserved64: XXH32_hash
+        total_len: uint64
+        v1: uint64
+        v2: uint64
+        v3: uint64
+        v4: uint64
+        mem64: array[0..3, uint64]
+        memsize: uint32
+        reserved32: uint64
+        reserved64: uint32
 
     XXH3_state* = object
-        acc: array[0..7, XXH64_hash]
+        acc: array[0..7, uint64]
         customSecret: array[0..XXH3_SECRET_DEFAULT_SIZE-1, uint8]
         buffer: array[0..XXH3_INTERNALBUFFER_SIZE-1, uint8]
-        bufferedSize: XXH32_hash
-        nbStripesPerBlock: XXH32_hash
-        nbStripesSoFar: XXH32_hash
-        secretLimit: XXH32_hash
-        reserved32: XXH32_hash
-        reserved32_2: XXH64_hash
-        totalLen: XXH64_hash
-        seed: XXH64_hash
-        reserved64: XXH32_hash
+        bufferedSize: uint32
+        nbStripesPerBlock: uint32
+        nbStripesSoFar: uint32
+        secretLimit: uint32
+        reserved32: uint32
+        reserved32_2: uint64
+        totalLen: uint64
+        seed: uint64
+        reserved64: uint32
         secret: cstring
 
     XXH32_canonical* = array[0..3, uint8]
     XXH64_canonical* = array[0..7, uint8]
 
     XXH128_hash* = object
-        low64, high64: XXH64_hash
+        low64, high64: uint64
 
     XXH128_canonical* = object
         digest: array[0..15, uint8]
@@ -111,8 +108,8 @@ type
         XXH_unaligned
 
 static:
-    assert sizeof(XXH32_canonical) == sizeof(XXH32_hash)
-    assert sizeof(XXH64_canonical) == sizeof(XXH64_hash)
+    assert sizeof(XXH32_canonical) == sizeof(uint32)
+    assert sizeof(XXH64_canonical) == sizeof(uint64)
 
 proc `+`[K, T:SomeInteger](a: ptr K; b: T): ptr K {.inline.} =
     result = cast[ptr K](cast[int](a) + (b.int * K.sizeof))
@@ -268,7 +265,7 @@ proc XXH32_endian_align(cinput: ptr uint8; clen: int; seed: uint32; align: XXH_a
 
     return XXH32_finalize(h32, input, len and 15, align)
 
-proc xxh32*(input: pointer; len: int; seed: XXH32_hash): XXH32_hash =
+proc xxh32*(input: pointer; len: int; seed: uint32): uint32 =
     # Simple version, good for code maintenance, but unfortunately slow for small inputs
     # XXH32_state state;
     # XXH32_init(&state, seed);
@@ -282,7 +279,7 @@ proc xxh32*(input: pointer; len: int; seed: XXH32_hash): XXH32_hash =
         return XXH32_endian_align(cast[ptr uint8](input), len, seed, XXH_aligned);
     return XXH32_endian_align(cast[ptr uint8](input), len, seed, XXH_unaligned);
 
-proc init*(statePtr: var XXH32_state; seed: XXH32_hash) =
+proc init*(statePtr: var XXH32_state; seed: uint32) =
     var state: XXH32_state
 
     state.v1 = seed + PRIME32_1 + PRIME32_2;
@@ -299,12 +296,12 @@ proc update*(state: var XXH32_state; input: pointer; len: int) =
     var p: ptr uint8    = cast[ptr uint8](input)
     let bEnd: ptr uint8 = p + len;
 
-    state.total_len_32 += len.XXH32_hash
-    state.large_len = state.large_len or (((len >= 16) or (state.total_len_32 >= 16)).XXH32_hash)
+    state.total_len_32 += len.uint32
+    state.large_len = state.large_len or (((len >= 16) or (state.total_len_32 >= 16)).uint32)
 
     if (state.memsize.int + len) < 16: # fill in tmp buffer
         copymem(cast[ptr uint8](cast[int](addr state.mem32) + state.memsize.int), input, len)
-        state.memsize += len.XXH32_hash
+        state.memsize += len.uint32
         return
 
     if state.memsize >= 0: # some data left from previous update
@@ -347,9 +344,9 @@ proc update*(state: var XXH32_state; input: pointer; len: int) =
     if p < bEnd:
         let z = cast[int](bEnd - p)
         copymem(cast[pointer](addr state.mem32), p, z)
-        state.memsize = z.XXH32_hash
+        state.memsize = z.uint32
 
-proc final*(state: var XXH32_state): XXH32_hash =
+proc final*(state: var XXH32_state): uint32 =
     var h32 {.noinit.}: uint32
 
     if state.large_len > 0:
@@ -361,12 +358,12 @@ proc final*(state: var XXH32_state): XXH32_hash =
 
     return XXH32_finalize(h32, cast[ptr uint8](addr state.mem32), state.memsize.int, XXH_aligned)
 
-proc canonicalFromHash*(dst: var XXH32_canonical; hash: XXH32_hash) =
+proc canonicalFromHash*(dst: var XXH32_canonical; hash: uint32) =
     var yhash = hash
     when cpu_endian == little_endian: yhash = XXH_swap32(yhash)
     copymem(addr dst, addr yhash, dst.sizeof)
 
-proc hashFromCanonical*(src: XXH32_canonical): XXH32_hash =
+proc hashFromCanonical*(src: XXH32_canonical): uint32 =
     return XXH_readBE32(unsafeaddr src)
 
 proc XXH_read64(memPtr: pointer): uint64 =
@@ -518,7 +515,7 @@ proc XXH64_endian_align(cinput: ptr uint8; clen: int; seed: uint64; align: XXH_a
 
     return XXH64_finalize(h64, input, len, align)
 
-proc xxh64*(input: pointer; len: int; seed: XXH64_hash): XXH64_hash =
+proc xxh64*(input: pointer; len: int; seed: uint64): uint64 =
     # /* Simple version, good for code maintenance, but unfortunately slow for small inputs */
     # XXH64_state state;
     # XXH64_init(&state, seed);
@@ -531,7 +528,7 @@ proc xxh64*(input: pointer; len: int; seed: XXH64_hash): XXH64_hash =
         return XXH64_endian_align(cast[ptr uint8](input), len, seed, XXH_aligned)
     return XXH64_endian_align(cast[ptr uint8](input), len, seed, XXH_unaligned)
 
-proc init*(statePtr: var XXH64_state; seed: XXH64_hash) =
+proc init*(statePtr: var XXH64_state; seed: uint64) =
     var state: XXH64_state
     state.v1 = seed + PRIME64_1 + PRIME64_2
     state.v2 = seed + PRIME64_2
@@ -546,7 +543,7 @@ proc update*(state: var XXH64_state; input: pointer; len: int) =
     var p: ptr uint8    = cast[ptr uint8](input)
     let bEnd: ptr uint8 = p + len
 
-    state.total_len += len.XXH64_hash
+    state.total_len += len.uint64
 
     if (state.memsize.int + len) < 32: # fill in tmp buffer
         copymem(cast[ptr uint8](cast[int](addr state.mem64) + state.memsize.int), input, len)
@@ -587,9 +584,9 @@ proc update*(state: var XXH64_state; input: pointer; len: int) =
 
     if p < bEnd:
         copymem(addr state.mem64, p, cast[int](bEnd-p))
-        state.memsize = cast[XXH32_hash](bEnd - p)
+        state.memsize = cast[uint32](bEnd - p)
 
-proc final*(state: var XXH64_state): XXH64_hash =
+proc final*(state: var XXH64_state): uint64 =
     var h64: uint64
 
     if state.total_len >= 32:
@@ -611,12 +608,12 @@ proc final*(state: var XXH64_state): XXH64_hash =
 
     return XXH64_finalize(h64, cast[ptr uint8](addr state.mem64), state.total_len.int, XXH_aligned);
 
-proc canonicalFromHash*(dst: var XXH64_canonical; hash: XXH64_hash) =
+proc canonicalFromHash*(dst: var XXH64_canonical; hash: uint64) =
     var yhash = hash
     when cpu_endian == little_endian: yhash = XXH_swap64(yhash)
     copymem(addr dst, addr yhash, dst.sizeof)
 
-proc hashFromCanonical*(src: XXH64_canonical): XXH64_hash =
+proc hashFromCanonical*(src: XXH64_canonical): uint64 =
     return XXH_readBE64(unsafeaddr src)
 
 when is_main_module:
